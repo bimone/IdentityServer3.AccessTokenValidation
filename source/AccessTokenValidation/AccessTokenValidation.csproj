@@ -3,11 +3,9 @@
     <RootNamespace>IdentityServer3.AccessTokenValidation</RootNamespace>
     <AssemblyName>BIMOne.IdentityServer3.AccessTokenValidation</AssemblyName>
     <TargetFramework>net48</TargetFramework>
-    <AssemblyTitle>Access Token Validation Middleware for IdentityServer3</AssemblyTitle>
-    <Product>AccessTokenValidationMiddleware</Product>
-    <Copyright>Copyright ©  2015 Dominick Baier, Brock Allen &amp; Contributors</Copyright>
-    <DocumentationFile>..\..\build\IdentityServer3.AccessTokenValidation.xml</DocumentationFile>
+    <DocumentationFile>..\..\build\BIMOne.IdentityServer3.AccessTokenValidation.xml</DocumentationFile>
     <OutputPath>..\..\build\</OutputPath>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System.Net.Http.WebRequest" />
@@ -17,6 +15,8 @@
     <None Include="..\default.licenseheader">
       <Link>default.licenseheader</Link>
     </None>
+    
+    <Compile Include="../VersionAssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="IdentityModel" Version="5.2.0" />
