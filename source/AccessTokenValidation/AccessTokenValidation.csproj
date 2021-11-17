@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>IdentityServer3.AccessTokenValidation</RootNamespace>
     <AssemblyName>IdentityServer3.AccessTokenValidation</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -79,7 +79,6 @@
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.3" />
     <PackageReference Include="Microsoft.IdentityModel.Protocol.Extensions" Version="1.0.2.206221351" />
     <PackageReference Include="Microsoft.Owin" Version="3.0.1" />
-    <PackageReference Include="Microsoft.Owin.Security" Version="3.0.1" />
     <PackageReference Include="Microsoft.Owin.Security.Jwt" Version="3.0.1" />
     <PackageReference Include="Microsoft.Owin.Security.OAuth" Version="3.0.1" />
     <PackageReference Include="Moq" Version="4.2.1510.2205" />
