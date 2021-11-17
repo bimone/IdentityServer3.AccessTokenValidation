@@ -3,44 +3,46 @@ using FluentAssertions;
 using IdentityServer3.AccessTokenValidation;
 using Owin;
 using System;
-using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using IdentityModel.Client;
 using Xunit;
 
 namespace AccessTokenValidation.Tests.Integration_Tests
 {
     public class ResponseHeaders
     {
-        IdentityServerBearerTokenAuthenticationOptions _options = new IdentityServerBearerTokenAuthenticationOptions
+        private readonly IdentityServerBearerTokenAuthenticationOptions _options = new IdentityServerBearerTokenAuthenticationOptions
         {
             IssuerName = TokenFactory.DefaultIssuer,
             SigningCertificate = new X509Certificate2(Convert.FromBase64String(TokenFactory.DefaultPublicKey)),
             ValidationMode = ValidationMode.Local,
-            RequiredScopes = new string[] { TokenFactory.Api2Scope }
+            RequiredScopes = new[] { TokenFactory.Api2Scope }
         };
 
         [Fact]
         public async Task WhenCorsHeadersAreAlreadySetOnTheResponse_LeavesThemAsIs()
         {
+            X509Certificate2 cert;
             var client = PipelineFactory.CreateHttpClient(_options, x =>
-            {
-                x.Use(async (context, next) =>
-                {
-                    context.Response.Headers.Add("Access-Control-Allow-Origin", new[] { "ACAO Value" });
-                    context.Response.Headers.Add("Access-Control-Allow-Method", new[] { "ACAM Value" });
-                    context.Response.Headers.Add("Access-Control-Allow-Headers", new[] { "ACAH Value" });
+                                                                    {
+                                                                        x.Use(async (context, next) =>
+                                                                              {
+                                                                                  context.Response.Headers.Add("Access-Control-Allow-Origin", new[] { "ACAO Value" });
+                                                                                  context.Response.Headers.Add("Access-Control-Allow-Method", new[] { "ACAM Value" });
+                                                                                  context.Response.Headers.Add("Access-Control-Allow-Headers", new[] { "ACAH Value" });
 
-                    await next();
-                });
-            });
+                                                                                  await next();
+                                                                              });
+                                                                    });
 
-            var token = TokenFactory.CreateTokenString(TokenFactory.CreateToken(scope: new string[] { TokenFactory.Api1Scope }));
+            string token = TokenFactory.CreateTokenString(TokenFactory.CreateToken(scope: new[] { TokenFactory.Api1Scope }));
             client.SetBearerToken(token);
 
-            var result = await client.GetAsync("http://test");
-            var responseHeaders = result.Headers;
+            HttpResponseMessage result = await client.GetAsync("http://test");
+            HttpResponseHeaders responseHeaders = result.Headers;
 
             responseHeaders.GetValues("Access-Control-Allow-Origin").Should().BeEquivalentTo("ACAO Value");
             responseHeaders.GetValues("Access-Control-Allow-Method").Should().BeEquivalentTo("ACAM Value");

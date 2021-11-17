@@ -19,20 +19,20 @@ using Microsoft.Owin.Logging;
 using Microsoft.Owin.Security.Jwt;
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens;
 using System.Net.Http;
-using System.Security.Cryptography;
 using System.Threading;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.IdentityModel.Tokens;
 
 namespace IdentityServer3.AccessTokenValidation
 {
-    internal class DiscoveryDocumentIssuerSecurityTokenProvider : IIssuerSecurityTokenProvider
+    internal class DiscoveryDocumentIssuerSecurityTokenProvider : IIssuerSecurityKeyProvider
     {
         private readonly ReaderWriterLockSlim _synclock = new ReaderWriterLockSlim();
         private readonly ConfigurationManager<OpenIdConnectConfiguration> _configurationManager;
         private readonly ILogger _logger;
         private string _issuer;
-        private IEnumerable<SecurityToken> _tokens;
+        private ICollection<SecurityKey> _keys;
 
         public DiscoveryDocumentIssuerSecurityTokenProvider(string discoveryEndpoint, IdentityServerBearerTokenAuthenticationOptions options, ILoggerFactory loggerFactory)
         {
@@ -51,7 +51,7 @@ namespace IdentityServer3.AccessTokenValidation
                 webRequestHandler.ServerCertificateValidationCallback = options.BackchannelCertificateValidator.Validate;
             }
 
-            _configurationManager = new ConfigurationManager<OpenIdConnectConfiguration>(discoveryEndpoint, new HttpClient(handler))
+            _configurationManager = new ConfigurationManager<OpenIdConnectConfiguration>(discoveryEndpoint, new OpenIdConnectConfigurationRetriever(), new HttpClient(handler))
             {
                 AutomaticRefreshInterval = options.AutomaticRefreshInterval
             };
@@ -96,7 +96,7 @@ namespace IdentityServer3.AccessTokenValidation
                 _synclock.EnterReadLock();
                 try
                 {
-                    var issuer = _issuer.EnsureTrailingSlash();
+                    string issuer = _issuer.EnsureTrailingSlash();
                     return issuer + "resources";
                 }
                 finally
@@ -106,13 +106,7 @@ namespace IdentityServer3.AccessTokenValidation
             }
         }
 
-        /// <summary>
-        /// Gets all known security tokens.
-        /// </summary>
-        /// <value>
-        /// All known security tokens.
-        /// </value>
-        public IEnumerable<SecurityToken> SecurityTokens
+        public IEnumerable<Microsoft.IdentityModel.Tokens.SecurityKey> SecurityKeys
         {
             get
             {
@@ -120,7 +114,7 @@ namespace IdentityServer3.AccessTokenValidation
                 _synclock.EnterReadLock();
                 try
                 {
-                    return _tokens;
+                    return _keys;
                 }
                 finally
                 {
@@ -134,7 +128,7 @@ namespace IdentityServer3.AccessTokenValidation
             _synclock.EnterWriteLock();
             try
             {
-                var result = AsyncHelper.RunSync(async () => await _configurationManager.GetConfigurationAsync());
+                OpenIdConnectConfiguration result = AsyncHelper.RunSync(async () => await _configurationManager.GetConfigurationAsync());
 
                 if (result.JsonWebKeySet == null)
                 {
@@ -142,21 +136,8 @@ namespace IdentityServer3.AccessTokenValidation
                     throw new InvalidOperationException("Discovery document has no configured signing key. aborting.");
                 }
 
-                var tokens = new List<SecurityToken>();
-                foreach (var key in result.JsonWebKeySet.Keys)
-                {
-                    var rsa = RSA.Create();
-                    rsa.ImportParameters(new RSAParameters
-                    {
-                        Exponent = Base64UrlEncoder.DecodeBytes(key.E),
-                        Modulus = Base64UrlEncoder.DecodeBytes(key.N)
-                    });
-
-                    tokens.Add(new RsaSecurityToken(rsa, key.Kid));
-                }
-
                 _issuer = result.Issuer;
-                _tokens = tokens;
+                _keys = result.SigningKeys;
             }
             catch (Exception ex)
             {

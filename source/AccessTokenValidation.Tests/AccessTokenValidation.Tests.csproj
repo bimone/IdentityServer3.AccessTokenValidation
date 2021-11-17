@@ -77,7 +77,8 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="FluentAssertions" Version="4.3.0" />
+    <PackageReference Include="FluentAssertions" Version="6.2.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="6.14.1" />
     <PackageReference Include="Moq" Version="4.2.1510.2205" />
     <PackageReference Include="OwinHttpMessageHandler" Version="2.0.2" />
     <PackageReference Include="xunit" Version="2.4.1" />

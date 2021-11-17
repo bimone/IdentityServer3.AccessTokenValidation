@@ -4,6 +4,7 @@ using IdentityServer3.AccessTokenValidation;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using IdentityModel.Client;
 using Xunit;
 
 namespace AccessTokenValidation.Tests.Integration_Tests
