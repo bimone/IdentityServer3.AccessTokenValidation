@@ -78,17 +78,8 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="4.3.0" />
-    <PackageReference Include="IdentityModel" Version="1.9.2" />
-    <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.3" />
-    <PackageReference Include="Microsoft.Owin" Version="3.0.1" />
-    <PackageReference Include="Microsoft.Owin.Security" Version="3.0.1" />
-    <PackageReference Include="Microsoft.Owin.Security.Jwt" Version="3.0.1" />
-    <PackageReference Include="Microsoft.Owin.Security.OAuth" Version="3.0.1" />
     <PackageReference Include="Moq" Version="4.2.1510.2205" />
-    <PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
-    <PackageReference Include="Owin" Version="1.0.0" />
     <PackageReference Include="OwinHttpMessageHandler" Version="1.3.4" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="4.0.2.206221351" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.extensibility.core" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
