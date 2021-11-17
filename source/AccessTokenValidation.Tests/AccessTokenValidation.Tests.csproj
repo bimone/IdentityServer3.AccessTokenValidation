@@ -64,7 +64,6 @@
     <Compile Include="Util\Cert.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <EmbeddedResource Include="Util\idsrv3test.pfx" />
   </ItemGroup>
   <ItemGroup>
@@ -79,14 +78,10 @@
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="6.2.0" />
     <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="6.14.1" />
-    <PackageReference Include="Moq" Version="4.2.1510.2205" />
+    <PackageReference Include="Moq" Version="4.16.1" />
     <PackageReference Include="OwinHttpMessageHandler" Version="2.0.2" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.extensibility.core" Version="2.4.1" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -25,7 +25,6 @@ namespace AccessTokenValidation.Tests.Integration_Tests
         [Fact]
         public async Task WhenCorsHeadersAreAlreadySetOnTheResponse_LeavesThemAsIs()
         {
-            X509Certificate2 cert;
             var client = PipelineFactory.CreateHttpClient(_options, x =>
                                                                     {
                                                                         x.Use(async (context, next) =>

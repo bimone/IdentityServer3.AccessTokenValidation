@@ -1,17 +1,17 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>IdentityServer3.AccessTokenValidation</id>
+    <id>BIMOne.IdentityServer3.AccessTokenValidation</id>
     <version>0.0.0</version>
-    <title>IdentityServer3 - Access Token Validation</title>
+    <title>IdentityServer3 - Access Token Validation (Upgraded for BIM Track)</title>
     <authors>Brock Allen, Dominick Baier</authors>
     <owners>Brock Allen, Dominick Baier</owners>
-    <projectUrl>https://github.com/identityserver/IdentityServer3.AccessTokenValidation</projectUrl>
+    <projectUrl>https://github.com/bimone/IdentityServer3.AccessTokenValidation</projectUrl>
     <iconUrl>https://identityserver.github.io/Documentation/assets/images/icons/IDserver_icon128.jpg</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <licenseUrl>https://github.com/IdentityServer/IdentityServer3.AccessTokenValidation/blob/master/LICENSE</licenseUrl>
     <description>Access token validation middleware for JWT and reference tokens issued by IdentityServer3.</description>
-    <copyright>Copyright 2015</copyright>
+    <copyright>Copyright 2021</copyright>
     <tags>IdentityServer OpenID Connect OpenIDConnect OAuth2 OWIN ASP.NET Katana WebApi SSO Federation Claims Identity JWT token</tags>
     
     <frameworkAssemblies>
@@ -20,13 +20,11 @@
     </frameworkAssemblies>
 
     <dependencies>
-      <dependency id="Owin" version="1.0"/>
-      <dependency id="Microsoft.Owin.Security.Jwt" version="3.0.1" />
-      <dependency id="Microsoft.AspNet.WebApi.Client" version="5.2.3" />
-      <dependency id="IdentityModel" version="[1.9.2,2.0)" />
-      <dependency id="Newtonsoft.Json" version="8.0.3" />
-      <dependency id="Microsoft.IdentityModel.Protocol.Extensions" version="1.0.2.206221351" />
-      <dependency id="System.IdentityModel.Tokens.Jwt" version="4.0.2.206221351" />
+	  <dependency id="IdentityModel" version="5.2.0" />
+      <dependency id="Microsoft.AspNet.WebApi.Client" version="5.2.7" />
+	  <dependency id="Microsoft.IdentityModel.Protocols.OpenIdConnect" version="6.14.1" />
+	  <dependency id="Microsoft.Owin.Security.Jwt" version="4.2.0" />
+      <dependency id="Newtonsoft.Json" version="10.0.0" />
     </dependencies>
   </metadata>
 </package>
