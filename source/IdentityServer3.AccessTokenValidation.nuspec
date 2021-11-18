@@ -4,7 +4,7 @@
     <id>BIMOne.IdentityServer3.AccessTokenValidation</id>
     <version>0.0.0</version>
     <title>IdentityServer3 - Access Token Validation (Upgraded for BIM Track)</title>
-    <authors>Brock Allen, Dominick Baier</authors>
+    <authors>BIM One</authors>
     <owners>Brock Allen, Dominick Baier</owners>
     <projectUrl>https://github.com/bimone/IdentityServer3.AccessTokenValidation</projectUrl>
     <iconUrl>https://identityserver.github.io/Documentation/assets/images/icons/IDserver_icon128.jpg</iconUrl>
@@ -24,7 +24,7 @@
       <dependency id="Microsoft.AspNet.WebApi.Client" version="5.2.7" />
 	  <dependency id="Microsoft.IdentityModel.Protocols.OpenIdConnect" version="6.14.1" />
 	  <dependency id="Microsoft.Owin.Security.Jwt" version="4.2.0" />
-      <dependency id="Newtonsoft.Json" version="10.0.0" />
+      <dependency id="Newtonsoft.Json" version="11.0.2" />
     </dependencies>
   </metadata>
 </package>
