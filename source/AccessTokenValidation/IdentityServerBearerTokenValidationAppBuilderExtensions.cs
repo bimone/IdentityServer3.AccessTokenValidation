@@ -212,37 +212,5 @@ namespace Owin
 
             }, LazyThreadSafetyMode.PublicationOnly);
         }
-        
-        // public delegate IEnumerable<SecurityKey> IssuerSigningKeyResolver(
-        //     string token,
-        //     SecurityToken securityToken,
-        //     string kid,
-        //     TokenValidationParameters validationParameters);
-        //
-        // private static IEnumerable<System.IdentityModel.Tokens.SecurityKey> ResolveRsaKeys(
-        //     string token, 
-        //     Microsoft.IdentityModel.Tokens.SecurityToken securityToken, 
-        //     SecurityKeyIdentifier keyIdentifier, 
-        //     TokenValidationParameters validationParameters)
-        // {
-        //     string id = null;
-        //     foreach (System.IdentityModel.Tokens.SecurityKeyIdentifierClause keyId in keyIdentifier)
-        //     {
-        //         id = keyId.Id;
-        //         /*var nk = keyId as NamedKeySecurityKeyIdentifierClause;
-        //         if (nk != null)
-        //         {
-        //             id = nk.Id;
-        //             break;
-        //         }*/
-        //     }
-        //
-        //     if (id == null) return null;
-        //
-        //     var issuerToken = validationParameters.key.IssuerSigningTokens.FirstOrDefault(it => it.Id == id);
-        //     if (issuerToken == null) return null;
-        //
-        //     return issuerToken.SecurityKeys.FirstOrDefault();
-        // }
     }
 }

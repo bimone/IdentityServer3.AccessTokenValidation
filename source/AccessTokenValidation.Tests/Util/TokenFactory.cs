@@ -1,5 +1,4 @@
-﻿using IdentityModel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
@@ -47,10 +46,8 @@ namespace AccessTokenValidation.Tests.Util
             }
 
             scope?.ToList().ForEach(s => additionalClaims.Add(new Claim("scope", s)));
-
-            var credential = new System.IdentityModel.Tokens.X509SigningCredentials(signingCertificate ?? DefaultSigningCertificate);
+            
             var signingKey = new SigningCredentials(new X509SecurityKey(DefaultSigningCertificate), SecurityAlgorithms.RsaSha256Signature);
-
             var token = new JwtSecurityToken(
                 issuer ?? DefaultIssuer,
                 audience ?? DefaultAudience,
