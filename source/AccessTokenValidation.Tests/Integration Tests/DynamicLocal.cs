@@ -3,8 +3,8 @@ using AccessTokenValidation.Tests.Util;
 using FluentAssertions;
 using IdentityServer3.AccessTokenValidation;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
+using IdentityModel.Client;
 using Xunit;
 
 namespace AccessTokenValidation.Tests.Integration_Tests
@@ -29,11 +29,9 @@ namespace AccessTokenValidation.Tests.Integration_Tests
             client.SetBearerToken(token);
 
             Func<Task> action = async () => await client.GetAsync("http://test");
-            action.
-                ShouldThrow<InvalidOperationException>().
-                And.
-                Message.Should().Contain("IDX10803"); // IDX10803: Unable to create to obtain configuration from: https://discodoc
 
+            Assert.ThrowsAsync<InvalidOperationException>(action)
+                .Result.Message.Should().Contain("IDX20803"); // IDX20803: Unable to create to obtain configuration from: https://discodoc
             _options.BackchannelHttpHandler = new DiscoveryEndpointHandler();
 
             var result = await client.GetAsync("http://test");

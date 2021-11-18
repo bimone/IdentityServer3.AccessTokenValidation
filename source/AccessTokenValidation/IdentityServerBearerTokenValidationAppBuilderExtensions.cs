@@ -20,9 +20,10 @@ using Microsoft.Owin.Logging;
 using Microsoft.Owin.Security.Jwt;
 using Microsoft.Owin.Security.OAuth;
 using System;
-using System.IdentityModel.Tokens;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Owin
 {
@@ -141,20 +142,21 @@ namespace Owin
         {
             return new Lazy<OAuthBearerAuthenticationOptions>(() => 
             {
-                JwtFormat tokenFormat = null;
+                JwtFormat tokenFormat;
 
                 // use static configuration
                 if (!string.IsNullOrWhiteSpace(options.IssuerName) &&
                     options.SigningCertificate != null)
                 {
-                    var audience = options.IssuerName.EnsureTrailingSlash();
+                    string audience = options.IssuerName.EnsureTrailingSlash();
                     audience += "resources";
 
+                    Microsoft.IdentityModel.Tokens.SecurityKey securityKey = new X509SecurityKey(new X509Certificate2(options.SigningCertificate));
                     var valParams = new TokenValidationParameters
                     {
                         ValidIssuer = options.IssuerName,
                         ValidAudience = audience,
-                        IssuerSigningToken = new X509SecurityToken(options.SigningCertificate),
+                        IssuerSigningKey = securityKey,
 
                         NameClaimType = options.NameClaimType,
                         RoleClaimType = options.RoleClaimType,
@@ -191,7 +193,7 @@ namespace Owin
                     }
                     else
                     {
-                        valParams.IssuerSigningKeyResolver = ResolveRsaKeys;
+                         valParams.IssuerSigningKeyResolver = options.IssuerSigningKeyResolver;
                     }
 
                     tokenFormat = new JwtFormat(valParams, issuerProvider);
@@ -209,31 +211,6 @@ namespace Owin
                 return bearerOptions;
 
             }, LazyThreadSafetyMode.PublicationOnly);
-        }
-
-        private static SecurityKey ResolveRsaKeys(
-            string token, 
-            SecurityToken securityToken, 
-            SecurityKeyIdentifier keyIdentifier, 
-            TokenValidationParameters validationParameters)
-        {
-            string id = null;
-            foreach (var keyId in keyIdentifier)
-            {
-                var nk = keyId as NamedKeySecurityKeyIdentifierClause;
-                if (nk != null)
-                {
-                    id = nk.Id;
-                    break;
-                }
-            }
-
-            if (id == null) return null;
-
-            var issuerToken = validationParameters.IssuerSigningTokens.FirstOrDefault(it => it.Id == id);
-            if (issuerToken == null) return null;
-
-            return issuerToken.SecurityKeys.FirstOrDefault();
         }
     }
 }

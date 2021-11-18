@@ -1,16 +1,13 @@
 ﻿using AccessTokenValidation.Tests.Util;
 using IdentityServer3.AccessTokenValidation;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using FluentAssertions;
 using Microsoft.Owin.Security.OAuth;
 using System.Net;
-using System.Net.Http;
+using IdentityModel.Client;
 
 namespace AccessTokenValidation.Tests.Integration_Tests
 {

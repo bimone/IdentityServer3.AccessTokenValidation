@@ -1,7 +1,7 @@
 properties {
 	$base_directory = Resolve-Path . 
 	$src_directory = "$base_directory\source"
-	$output_directory = "$base_directory\build"
+	$output_directory = "$base_directory\build\net48"
 	$dist_directory = "$base_directory\distribution"
 	$sln_file = "$src_directory\IdentityServer3.AccessTokenValidation.sln"
 	$target_config = "Release"
@@ -10,7 +10,7 @@ properties {
 	$nuget_path = "$src_directory\.nuget\nuget.exe"
 	
 	$buildNumber = 0;
-	$version = "2.15.0.0"
+	$version = "2.15.1.0"
 	$preRelease = $null
 }
 
@@ -24,7 +24,7 @@ task Clean {
 }
 
 task Compile -depends UpdateVersion {
-	exec { msbuild /nologo /verbosity:q $sln_file /p:Configuration=$target_config /p:TargetFrameworkVersion=v4.5 }
+	exec { msbuild /nologo /verbosity:q $sln_file /p:Configuration=$target_config /p:TargetFrameworkVersion=v4.8 }
 }
 
 task RunTests -depends Compile {
@@ -52,19 +52,19 @@ task UpdateVersion {
 }
 
 task ILMerge -depends Compile {
-	$input_dlls = "$output_directory\IdentityServer.v3.AccessTokenValidation.dll"
+	$input_dlls = "$output_directory\BIMOne.IdentityServer.v3.AccessTokenValidation.dll"
 
 	Get-ChildItem -Path $output_directory -Filter *.dll |
 		foreach-object {
-			# Exclude IdentityServer3.AccessTokenValidation.dll as that will be the primary assembly
-			if ("$_" -ne "IdentityServer3.AccessTokenValidation.dll" -and 
+			# Exclude BIMOne.IdentityServer3.AccessTokenValidation.dll as that will be the primary assembly
+			if ("$_" -ne "BIMOne.IdentityServer3.AccessTokenValidation.dll" -and 
 			    "$_" -ne "Owin.dll") {
 				$input_dlls = "$input_dlls $output_directory\$_"
 			}
 	}
 
-	New-Item $dist_directory\lib\net45 -Type Directory
-	Invoke-Expression "$ilmerge_path /targetplatform:v4 /internalize:ilmerge.exclude /allowDup /target:library /out:$dist_directory\lib\net45\IdentityServer.v3.AccessTokenValidation.dll $input_dlls"
+	New-Item $dist_directory\lib\net48 -Type Directory
+	Invoke-Expression "$ilmerge_path /targetplatform:v4 /internalize:ilmerge.exclude /allowDup /target:library /out:$dist_directory\lib\net48\IdentityServer.v3.AccessTokenValidation.dll $input_dlls"
 }
 
 task CreateNuGetPackage -depends Compile {
@@ -85,8 +85,8 @@ task CreateNuGetPackage -depends Compile {
 		$packageVersion = $packageVersion + "-build" + $buildNumber.ToString().PadLeft(5,'0')
 	}
 	
-	New-Item $dist_directory\lib\net45 -Type Directory
-	copy-item $output_directory\IdentityServer3.AccessTokenValidation.* $dist_directory\lib\net45
+	New-Item $dist_directory\lib\net48 -Type Directory
+	copy-item $output_directory\BIMOne.IdentityServer3.AccessTokenValidation.* $dist_directory\lib\net48
 
 	copy-item $src_directory\IdentityServer3.AccessTokenValidation.nuspec $dist_directory
 	exec { . $nuget_path pack $dist_directory\IdentityServer3.AccessTokenValidation.nuspec -BasePath $dist_directory -o $dist_directory -version $packageVersion }

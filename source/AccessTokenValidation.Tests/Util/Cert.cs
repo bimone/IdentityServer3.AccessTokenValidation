@@ -16,7 +16,7 @@ namespace AccessTokenValidation.Tests.Util
 
         private static byte[] ReadStream(Stream input)
         {
-            var buffer = new byte[16 * 1024];
+            byte[] buffer = new byte[16 * 1024];
             using (var ms = new MemoryStream())
             {
                 int read;

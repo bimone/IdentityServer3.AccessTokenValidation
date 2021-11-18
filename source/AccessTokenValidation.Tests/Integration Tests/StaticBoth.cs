@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using IdentityModel.Client;
 using Xunit;
 
 namespace AccessTokenValidation.Tests.Integration_Tests
@@ -71,8 +72,8 @@ namespace AccessTokenValidation.Tests.Integration_Tests
         {
             _options.RequiredScopes = new[] { TokenFactory.Api1Scope };
 
-            var client = PipelineFactory.CreateHttpClient(_options);
-            var token = TokenFactory.CreateTokenString(
+            HttpClient client = PipelineFactory.CreateHttpClient(_options);
+            string token = TokenFactory.CreateTokenString(
                 TokenFactory.CreateToken(scope: new[] { TokenFactory.Api1Scope }));
 
             client.SetBearerToken(token);

@@ -18,10 +18,8 @@ using IdentityModel.Client;
 using Microsoft.Owin.Logging;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Infrastructure;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -43,11 +41,12 @@ namespace IdentityServer3.AccessTokenValidation
                 throw new Exception("Authority must be set to use validation endpoint.");
             }
 
-            var baseAddress = options.Authority.EnsureTrailingSlash();
+            string baseAddress = options.Authority.EnsureTrailingSlash();
             baseAddress += "connect/introspect";
-            var introspectionEndpoint = baseAddress;
+            string introspectionEndpoint = baseAddress;
 
-            var handler = options.IntrospectionHttpHandler ?? new WebRequestHandler();
+            HttpMessageHandler handler = options.IntrospectionHttpHandler ?? new WebRequestHandler();
+            var invoker = new HttpMessageInvoker(handler);
 
             if (options.BackchannelCertificateValidator != null)
             {
@@ -60,20 +59,26 @@ namespace IdentityServer3.AccessTokenValidation
 
                 webRequestHandler.ServerCertificateValidationCallback = options.BackchannelCertificateValidator.Validate;
             }
-
+            
             if (!string.IsNullOrEmpty(options.ClientId))
             {
                 _client = new IntrospectionClient(
-                    introspectionEndpoint, 
-                    options.ClientId, 
-                    options.ClientSecret,
-                    handler);
+                    invoker,
+                    new IntrospectionClientOptions()
+                    {
+                        Address = introspectionEndpoint,
+                        ClientId = options.ClientId,
+                        ClientSecret = options.ClientSecret
+                    });
             }
             else
             {
                 _client = new IntrospectionClient(
-                    introspectionEndpoint,
-                    innerHttpMessageHandler: handler);
+                    invoker,
+                    new IntrospectionClientOptions
+                    {
+                        Address = introspectionEndpoint
+                    });
             }
 
             _options = options;
@@ -91,10 +96,10 @@ namespace IdentityServer3.AccessTokenValidation
                 }
             }
 
-            IntrospectionResponse response;
+            TokenIntrospectionResponse response;
             try
             {
-                response = await _client.SendAsync(new IntrospectionRequest { Token = context.Token });
+                response = await _client.Introspect(context.Token);
                 if (response.IsError)
                 {
                     _logger.WriteError("Error returned from introspection endpoint: " + response.Error);
@@ -113,11 +118,11 @@ namespace IdentityServer3.AccessTokenValidation
             }
 
             var claims = new List<Claim>();
-            foreach (var claim in response.Claims)
+            foreach (Claim claim in response.Claims)
             {
-                if (!string.Equals(claim.Item1, "active", StringComparison.Ordinal))
+                if (!string.Equals(claim.Type, "active", StringComparison.Ordinal))
                 {
-                    claims.Add(new Claim(claim.Item1, claim.Item2));
+                    claims.Add(new Claim(claim.Type, claim.Value));
                 }
             }
             

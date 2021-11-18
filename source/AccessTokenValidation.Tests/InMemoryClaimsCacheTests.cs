@@ -49,7 +49,7 @@ namespace AccessTokenValidation.Tests
 			Arrange(() =>
 				{
 					// mimic the DateTimeOffset rounding that happens via serialisation/deserialisation in the actual implementation
-					ExpectedCacheExpiry = ExpiryClaimSaysTokenExpiresAt.ToEpochTime().ToDateTimeOffsetFromEpoch(); 
+					ExpectedCacheExpiry = ExpiryClaimSaysTokenExpiresAt.ToUnixTimeSeconds().ToDateTimeFromEpoch(); 
 				});
 
 			// act
@@ -84,7 +84,7 @@ namespace AccessTokenValidation.Tests
 			CacheExpiryEvictsTokenAt = _clock.UtcNow.Add(_options.ValidationResultCacheDuration);
 			
 			// setup claims to include expiry claim
-			Claims = new[] {new Claim("bar","baz"), new Claim(ClaimTypes.Expiration,ExpiryClaimSaysTokenExpiresAt.ToEpochTime().ToString()) };
+			Claims = new[] {new Claim("bar","baz"), new Claim(ClaimTypes.Expiration,ExpiryClaimSaysTokenExpiresAt.ToUnixTimeSeconds().ToString()) };
 
 			specifyExpectedCacheExpiry();
 
